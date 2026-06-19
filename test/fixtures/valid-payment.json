@@ -1,0 +1,16 @@
+{
+  "x402Version": 1,
+  "scheme": "exact",
+  "network": "base",
+  "payload": {
+    "signature": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "authorization": {
+      "from": "0x1234567890abcdef1234567890abcdef12345678",
+      "to": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+      "value": "1000000",
+      "validAfter": "1700000000",
+      "validBefore": "9999999999",
+      "nonce": "0x0000000000000000000000000000000000000000000000000000000000000001"
+    }
+  }
+}
