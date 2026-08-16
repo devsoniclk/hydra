@@ -3,7 +3,7 @@
  */
 
 export { VerifyModule } from "./verify.js";
-export { SettleModule, BaseSettler, SolanaSettler } from "./settle/index.js";
+export { SettleModule, BaseSettler, SolanaSettler, CasperSettler } from "./settle/index.js";
 export { ReceiptGenerator } from "./receipts.js";
 export { ReplayGuard } from "./replay-guard.js";
 export { BatchSettler } from "./batch.js";

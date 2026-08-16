@@ -17,6 +17,9 @@ const PORT = parseInt(process.env.PORT ?? "8402", 10);
 const RPC_URL = process.env.RPC_URL ?? "https://mainnet.base.org";
 const SETTLER_KEY = process.env.SETTLER_KEY ?? "";
 const REDIS_URL = process.env.REDIS_URL ?? "";
+const CASPER_FACILITATOR_URL =
+  process.env.CASPER_FACILITATOR_URL ?? "https://x402-facilitator.cspr.cloud";
+const CASPER_NETWORK = process.env.CASPER_NETWORK ?? "casper:casper";
 const LOG_LEVEL = process.env.LOG_LEVEL ?? "info";
 
 const startTime = Date.now();
@@ -35,6 +38,10 @@ const verifyModule = new VerifyModule({
 const settleModule = new SettleModule({
   rpcUrl: RPC_URL,
   settlerKey: SETTLER_KEY || undefined,
+  casper: {
+    facilitatorUrl: CASPER_FACILITATOR_URL,
+    network: CASPER_NETWORK,
+  },
 });
 
 const receiptGenerator = new ReceiptGenerator();
@@ -135,6 +142,7 @@ const server = {
 console.log(`Hydra facilitator starting on port ${PORT}`);
 console.log(`  RPC URL: ${RPC_URL}`);
 console.log(`  Settler: ${SETTLER_KEY ? "configured" : "not configured (verify-only mode)"}`);
+console.log(`  Casper:  ${CASPER_FACILITATOR_URL} (${CASPER_NETWORK})`);
 console.log(`  Redis: ${REDIS_URL || "in-memory nonces"}`);
 
 export default server;

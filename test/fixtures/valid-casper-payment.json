@@ -1,0 +1,16 @@
+{
+  "x402Version": 1,
+  "scheme": "exact",
+  "network": "casper:casper",
+  "payload": {
+    "signature": "0x01bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "authorization": {
+      "from": "0202b0f3a0f9d0a0f5f6ba2e1a2b8e4e2d5c8a9f0b1c2d3e4f5061728394a5b6c7d8e",
+      "to": "hash-9f0c1d2e3a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5",
+      "value": "2500000000",
+      "validAfter": "1700000000",
+      "validBefore": "9999999999",
+      "nonce": "0x00000000000000000000000000000000000000000000000000000000000000c5"
+    }
+  }
+}

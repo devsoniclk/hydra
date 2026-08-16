@@ -8,6 +8,7 @@ import { type PublicClient, createPublicClient, http, formatUnits, parseAbi } fr
 import { base } from "viem/chains";
 import type { PaymentPayload, VerifyResult } from "./types.js";
 import { ReplayGuard } from "./replay-guard.js";
+import { isCasperNetwork, parseMotes } from "./settle/casper.js";
 
 /** USDC contract address on Base */
 const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as const;
@@ -54,7 +55,11 @@ export class VerifyModule {
       }
 
       // 3. Check network
-      if (payload.network !== "base" && payload.network !== "solana") {
+      if (
+        payload.network !== "base" &&
+        payload.network !== "solana" &&
+        !isCasperNetwork(payload.network)
+      ) {
         return { valid: false, reason: "unsupported_network" };
       }
 
@@ -94,6 +99,8 @@ export class VerifyModule {
         return await this.verifyEvmPayment(payload);
       } else if (payload.network === "solana") {
         return await this.verifySolanaPayment(payload);
+      } else if (isCasperNetwork(payload.network)) {
+        return await this.verifyCasperPayment(payload);
       }
 
       return { valid: false, reason: "unsupported_network" };
@@ -165,6 +172,40 @@ export class VerifyModule {
     } catch (error) {
       const message = error instanceof Error ? error.message : "unknown_error";
       return { valid: false, reason: `solana_verification_error: ${message}` };
+    }
+  }
+
+  /**
+   * Verify a Casper payment
+   *
+   * wCSPR is a CEP-18 token with 9 decimals, so the authorized amount must be
+   * a whole number of motes. Sub-mote precision is rejected outright rather
+   * than truncated — rounding a payment amount silently is never correct.
+   */
+  private async verifyCasperPayment(payload: PaymentPayload): Promise<VerifyResult> {
+    const { authorization, signature } = payload.payload;
+
+    try {
+      if (payload.scheme !== "exact") {
+        return { valid: false, reason: "unsupported_casper_scheme" };
+      }
+
+      // Casper signatures carry a 1-byte algorithm tag plus a 64-byte
+      // ed25519/secp256k1 signature, hex-encoded.
+      if (!signature || signature.replace(/^0x/, "").length < 128) {
+        return { valid: false, reason: "invalid_casper_signature" };
+      }
+
+      // Exact integer mote arithmetic; throws on fractional amounts.
+      parseMotes(authorization.value);
+
+      // Mark nonce as used
+      this.replayGuard.markNonceUsed(authorization.nonce);
+
+      return { valid: true };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "unknown_error";
+      return { valid: false, reason: `casper_verification_error: ${message}` };
     }
   }
 }
